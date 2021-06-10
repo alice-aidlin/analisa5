@@ -1,7 +1,32 @@
+'''
+Alice Aidlin 206448326
+Maayan Nadivi 208207068
+'''
+
+
 
 def main():
-    points=[[0,0],[1,0.8415],[2,0.9093],[3,0.1411],[4,-0.7568],[5,-0.9589],[6,-0.2794]]
+    points=[[0,0],[1,0.8415],[2,0.9093],[3,0.1411],[4,-0.7568],[5,-0.9589],[6,-0.2794]]#[x][y]
     find_point=2.5
+    choice = int(input("In which way you want to solve :\n1.Linear interpolation.\n2.Polynomial interpolation.\n3.Lagrange interpolation.\n4.Neville interpolation.\n"))
+    print("Answer: ")
+    if choice == 1:
+        print(Linear_interpolation(points,find_point))
+        main()
+    elif choice == 2:
+       print(Polynomial_interpolation(points,find_point))
+       main()
+    elif choice == 3:
+       print(Lagrange_interpolation(points,find_point))
+       main()
+    elif choice == 4:
+       print(Neville_interpolation(points, find_point))
+       main()
+    else:
+        print("invalid input. please try again!\n")
+        main()
+
+
 def Linear_interpolation(points,find_point):
      for row in range(len(points) - 1):
          if find_point > points[row][0] and find_point < points[row + 1][0]:
@@ -102,14 +127,38 @@ def Polynomial_interpolation(points,find_point):
         else:
             sum +=vector_a[i][0]*find_point ** i
 
-    print(sum)
+    return sum
+
+
+def Lagrange_interpolation(points,find_point):
+    sum = 0
+    for i in range(len(points)):
+        mul = 1
+        for j in range(len(points)):
+            if i == j:
+                continue
+            mul = mul * ((find_point-points[j][0]) / (points[i][0] - points[j][0]))
+        sum =sum+mul*points[i][1]
+    return sum
+
+def P(m,n,points,find_point):
+    if m==n:
+        return points[m][1]
+
+    res= ((find_point-points[m][0])*P(m+1,n,points,find_point)-(find_point-points[n][0])*P(m,n-1,points,find_point))/(points[n][0]-points[m][0])
+    return res
+
+
+def Neville_interpolation(points,find_point):
+    res_mat = list(range(len(points)))
+    for k in range(len(points)):
+        res_mat[k] = list(range(len(points)))
+
+    for i in range(len(points)):
+        for j in range(i,len(points)):
+            res_mat[i][j]=P(i,j,points,find_point)
+    return res_mat[0][len(points)-1]
 
 
 
-
-
-points=[[0,0],[1,0.8415],[2,0.9093],[3,0.1411],[4,-0.7568],[5,-0.9589],[6,-0.2794]]
-#points=[[1,0.8415],[2,0.9093],[3,0.1411]]
-find_point=2.5
-Polynomial_interpolation(points,find_point)
-
+main()
